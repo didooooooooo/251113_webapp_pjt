@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>로그인</title>
+  <link rel="stylesheet" href="css/login.css" />
+</head>
+<body>
+  <div class="login-container">
+    <h1>로그인</h1>
+    <form action="/login" method="POST">
+      <input type="text" name="username" placeholder="아이디" required />
+      <input type="password" name="password" placeholder="비밀번호" required />
+      <button type="submit">로그인</button>
+    </form>
+    <div class="signup-link">
+      아직 회원이 아니신가요? <a href="/signup">회원가입</a>
+    </div>
+  </div>
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('error') === '1') {
+    alert("아이디 또는 비밀번호가 올바르지 않습니다.");
+    // URL에서 쿼리 파라미터 제거 (페이지 리로드 없이)
+    const urlWithoutQuery = window.location.origin + window.location.pathname;
+    window.history.replaceState({}, document.title, urlWithoutQuery);
+  }
+</script></body>
+</html>
