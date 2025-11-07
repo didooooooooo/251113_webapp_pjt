@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="form-box">
+            <div class="form-tabs">
+                <div class="tab active" data-tab="login">로그인</div>
+                <div class="tab" data-tab="register">회원가입</div>
+            </div>
+            
+            <!-- 로그인 폼 -->
+            <form class="form login-form active" id="login-form" action="login" method="post">
+                <h2>환영합니다</h2>
+                <p class="form-subtitle">계정에 로그인하세요</p>
+                
+                <div class="form-group">
+                    <div class="input-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" name="username" placeholder="아이디" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" name="password" placeholder="비밀번호" required>
+                    </div>
+                </div>
+                
+                <div class="form-options">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="remember" name="remember">
+                        <span class="checkmark"></span>
+                        로그인 상태 유지
+                    </label>
+                    <a href="#" class="forgot-password">비밀번호 찾기</a>
+                </div>
+                
+                <button type="submit" class="form-button">로그인</button>
+                
+                <div class="social-login">
+                    <p>소셜 계정으로 로그인</p>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon"><i class="fab fa-google"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </form>
+            
+            <!-- 회원가입 폼 -->
+            <form class="form register-form" id="register-form" action="register" method="post">
+                <h2>계정 만들기</h2>
+                <p class="form-subtitle">몇 가지 정보만 입력하세요</p>
+                
+                <div class="form-group">
+                    <div class="input-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" name="email" placeholder="이메일" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="input-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="reg-username" name="reg-username" placeholder="아이디" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="reg-password" name="reg-password" placeholder="비밀번호" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="confirm-password" name="confirm-password" placeholder="비밀번호 확인" required>
+                    </div>
+                </div>
+                
+                <div class="form-options">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="agree-terms" name="agree-terms" required>
+                        <span class="checkmark"></span>
+                        <span class="terms-text"><a href="#">이용약관</a> 및 <a href="#">개인정보처리방침</a>에 동의합니다</span>
+                    </label>
+                </div>
+                
+                <button type="submit" class="form-button">회원가입</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 탭 전환 기능
+            const tabs = document.querySelectorAll('.tab');
+            const forms = document.querySelectorAll('.form');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+                    
+                    // 탭 활성화
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 폼 활성화
+                    forms.forEach(form => {
+                        form.classList.remove('active');
+                        if (form.classList.contains(tabName + '-form')) {
+                            form.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // URL 파라미터 가져오기
+            const urlParams = new URLSearchParams(window.location.search);
+            const errorParam = urlParams.get('error');
+            const successParam = urlParams.get('success');
+            const tabParam = urlParams.get('tab');
+            
+            // 에러 메시지 처리
+            if (errorParam) {
+                let errorMessage = '';
+                
+                if (errorParam === '1') {
+                    errorMessage = '아이디 또는 비밀번호가 올바르지 않습니다.';
+                } else if (errorParam === '2') {
+                    errorMessage = '비밀번호가 일치하지 않습니다.';
+                } else if (errorParam === '3') {
+                    errorMessage = '이미 사용 중인 아이디입니다.';
+                } else {
+                    errorMessage = '오류가 발생했습니다. 다시 시도해 주세요.';
+                }
+                
+                // 에러 메시지 표시
+                const formId = tabParam === 'register' ? 'register-form' : 'login-form';
+                const form = document.getElementById(formId);
+                
+                // 기존 에러 메시지 제거
+                const existingError = form.querySelector('.error-message');
+                if (existingError) {
+                    existingError.remove();
+                }
+                
+                const errorElement = document.createElement('div');
+                errorElement.className = 'error-message';
+                errorElement.textContent = errorMessage;
+                errorElement.style.color = '#e74c3c';
+                errorElement.style.marginTop = '10px';
+                errorElement.style.textAlign = 'center';
+                
+                form.appendChild(errorElement);
+            }
+            
+            // 성공 메시지 처리
+            if (successParam === '1') {
+                const loginForm = document.getElementById('login-form');
+                
+                // 기존 성공 메시지 제거
+                const existingSuccess = loginForm.querySelector('.success-message');
+                if (existingSuccess) {
+                    existingSuccess.remove();
+                }
+                
+                const successElement = document.createElement('div');
+                successElement.className = 'success-message';
+                successElement.textContent = '회원가입이 완료되었습니다. 로그인해 주세요.';
+                successElement.style.color = '#03c75a';
+                successElement.style.marginTop = '10px';
+                successElement.style.textAlign = 'center';
+                
+                loginForm.appendChild(successElement);
+            }
+            
+            // 탭 전환
+            if (tabParam === 'register') {
+                const registerTab = document.querySelector('.tab[data-tab="register"]');
+                registerTab.click();
+            }
+            
+            // 폼 유효성 검사
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    const username = document.getElementById('username').value;
+                    const password = document.getElementById('password').value;
+                    
+                    if (!username.trim()) {
+                        e.preventDefault();
+                        alert('아이디를 입력해주세요.');
+                        return false;
+                    }
+                    
+                    if (!password) {
+                        e.preventDefault();
+                        alert('비밀번호를 입력해주세요.');
+                        return false;
+                    }
+                });
+            }
+            
+            if (registerForm) {
+                registerForm.addEventListener('submit', function(e) {
+                    const email = document.getElementById('email').value;
+                    const username = document.getElementById('reg-username').value;
+                    const password = document.getElementById('reg-password').value;
+                    const confirmPassword = document.getElementById('confirm-password').value;
+                    const agreeTerms = document.getElementById('agree-terms').checked;
+                    
+                    if (!email || !validateEmail(email)) {
+                        e.preventDefault();
+                        alert('유효한 이메일 주소를 입력해주세요.');
+                        return false;
+                    }
+                    
+                    if (!username.trim()) {
+                        e.preventDefault();
+                        alert('아이디를 입력해주세요.');
+                        return false;
+                    }
+                    
+                    if (password.length < 6) {
+                        e.preventDefault();
+                        alert('비밀번호는 6자 이상이어야 합니다.');
+                        return false;
+                    }
+                    
+                    if (password !== confirmPassword) {
+                        e.preventDefault();
+                        alert('비밀번호가 일치하지 않습니다.');
+                        return false;
+                    }
+                    
+                    if (!agreeTerms) {
+                        e.preventDefault();
+                        alert('이용약관에 동의해주세요.');
+                        return false;
+                    }
+                });
+            }
+            
+            // 이메일 유효성 검사
+            function validateEmail(email) {
+                const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                return re.test(email);
+            }
+        });
+    </script>
+</body>
+</html>
