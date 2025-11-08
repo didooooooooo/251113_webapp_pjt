@@ -1,0 +1,68 @@
+// 플러그인 설정
+plugins {
+    id 'java'                    // 자바 플러그인
+    id 'war'
+    id 'application'             // 애플리케이션 플러그인 (실행 가능한 JAR 생성)
+}
+
+// 프로젝트 그룹 및 버전
+group = 'com.webapp'
+version = '1.0-SNAPSHOT'
+
+// 자바 버전 설정
+java {
+    sourceCompatibility = '17'   // 소스 코드 자바 버전
+    targetCompatibility = '17'   // 컴파일된 바이트코드 자바 버전
+}
+
+// 메인 클래스 지정 (애플리케이션 실행 시 진입점)
+application {
+    mainClass = 'com.webapp.member.Main'
+}
+
+// 의존성 다운로드 저장소
+repositories {
+    mavenCentral()               // Maven 중앙 저장소
+}
+
+// 프로젝트 의존성
+dependencies {
+    // MySQL JDBC 드라이버
+    implementation 'com.mysql:mysql-connector-j:8.0.33'
+    implementation 'javax.servlet:javax.servlet-api:4.0.1'
+
+}
+
+// JAR 파일 설정
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'com.webapp.member.Main',
+            'Implementation-Title': project.name,
+            'Implementation-Version': project.version
+        )
+    }
+}
+
+// Fat JAR 생성 태스크 (모든 의존성 포함)
+tasks.register('fatJar', Jar) {
+    archiveClassifier = 'all'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    
+    manifest {
+        attributes 'Main-Class': 'com.webapp.member.Main'
+    }
+    
+    from {
+        configurations.runtimeClasspath.collect { 
+            it.isDirectory() ? it : zipTree(it) 
+        }
+    }
+    
+    with jar
+}
+
+// 인코딩 설정
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}

@@ -1,0 +1,32 @@
+# 컴파일된 클래스 파일
+*.class
+target/
+build/
+bin/
+
+# 패키지 파일
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# 로그 파일
+*.log
+
+# IDE 설정 파일
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# OS 파일
+.DS_Store
+Thumbs.db
+
+# 환경설정 파일 (민감 정보)
+src/main/resources/application-local.properties
