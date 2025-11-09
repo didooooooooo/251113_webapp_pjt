@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function updateTabSlider(activeIndex) {
-        const position = activeIndex * 50; // 탭이 2개이므로 0% 또는 50%
+        const position = activeIndex * 100; // 탭이 2개이므로 0% 또는 50%
         tabSlider.style.transform = `translateX(${position}%)`;
     }
     
@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
             this.classList.add('active');
             
             // 탭 슬라이더 이동 (index 기반)
-            tabSlider.style.transform = `translateX(${index * 50}%)`; // 0 또는 50%
+            tabSlider.style.transform = `translateX(${index * 100}%)`; // 0 또는 50%
             
             const tabId = this.getAttribute('data-tab');
             tabContents.forEach(content => {
